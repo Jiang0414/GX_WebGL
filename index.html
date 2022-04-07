@@ -7,7 +7,7 @@
     <link rel="shortcut icon" href="TemplateData/favicon.ico">
     <link rel="stylesheet" href="TemplateData/style.css">
   </head>
-  <body>
+  <body onresize="ResetCanvas()">
     <div id="unity-container" class="unity-desktop">
       <canvas id="unity-canvas" width=1920 height=1080></canvas>
       <div id="unity-loading-bar">
@@ -54,7 +54,51 @@
         }
         updateBannerVisibility();
       }
+function ResetCanvas(){
+		//canvas.style.width = window.innerWidth + 'px';
+        //canvas.style.height = (window.innerWidth*9) / 16 + 'px';
+		if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) 
+        {
+        // Mobile device style: fill the whole browser client area with the game canvas:
 
+        var meta = document.createElement('meta');
+        meta.name = 'viewport';
+        document.getElementsByTagName('head')[0].appendChild(meta);
+        container.className = "unity-mobile";
+        canvas.style.position = 'absolute';
+
+        // To lower canvas resolution on mobile devices to gain some
+        // performance, uncomment the following line:
+        //config.devicePixelRatio = 1;
+        unityShowBanner('WebGL builds are not supported on mobile devices.');
+        var orientation = screen.orientation;
+        if(orientation.type === "landscape-primary" || orientation.type === "landscape-secondary")
+        {
+            meta.content = 'width=device-height, height=device-width, initial-scale=1.0, user-scalable=no, shrink-to-fit=yes';            
+            var newWidth = (window.innerHeight*16) / 9;
+            if(newWidth > window.innerWidth)
+            {
+                newWidth = window.innerWidth;
+            }
+            canvas.style.width = newWidth + 'px';
+            canvas.style.height = window.innerHeight + 'px';
+            canvas.style.left = window.innerWidth/ 2 - newWidth/ 2  + 'px';            
+        }else if(orientation.type === "portrait-secondary" || orientation.type === "portrait-primary")
+        {
+            meta.content = 'width=device-width, height=device-height, initial-scale=1.0, user-scalable=no, shrink-to-fit=yes';
+            canvas.style.width = window.innerWidth + 'px';
+            canvas.style.height = (window.innerWidth*9) / 16 + 'px';
+            canvas.style.left = 0  + 'px';
+        }    
+
+        //unityShowBanner('WebGL builds are not supported on mobile devices.');
+        } else 
+        {
+        // Desktop style: Render the game canvas in a window that can be maximized to fullscreen:		
+        canvas.style.width = window.innerWidth + 'px';
+        canvas.style.height = (window.innerWidth*9) / 16 + 'px';		
+        }
+	  }
       var buildUrl = "Build";
       var loaderUrl = buildUrl + "/WebGL.loader.js";
       var config = {
@@ -75,29 +119,47 @@
       // the canvas DOM size and WebGL render target sizes yourself.
       // config.matchWebGLToCanvasSize = false;
 
-      if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
+      if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) 
+        {
         // Mobile device style: fill the whole browser client area with the game canvas:
 
         var meta = document.createElement('meta');
         meta.name = 'viewport';
-        meta.content = 'width=device-width, height=device-height, initial-scale=1.0, user-scalable=no, shrink-to-fit=yes';
         document.getElementsByTagName('head')[0].appendChild(meta);
         container.className = "unity-mobile";
+        canvas.style.position = 'absolute';
 
         // To lower canvas resolution on mobile devices to gain some
         // performance, uncomment the following line:
-        // config.devicePixelRatio = 1;
-
-        canvas.style.width = window.innerWidth + 'px';
-        canvas.style.height = window.innerHeight + 'px';
-
+        //config.devicePixelRatio = 1;
         unityShowBanner('WebGL builds are not supported on mobile devices.');
-      } else {
-        // Desktop style: Render the game canvas in a window that can be maximized to fullscreen:
+        var orientation = screen.orientation;
+        if(orientation.type === "landscape-primary" || orientation.type === "landscape-secondary")
+        {
+            meta.content = 'width=device-height, height=device-width, initial-scale=1.0, user-scalable=no, shrink-to-fit=yes';            
+            var newWidth = (window.innerHeight*16) / 9;
+            if(newWidth > window.innerWidth)
+            {
+                newWidth = window.innerWidth;
+            }
+            canvas.style.width = newWidth + 'px';
+            canvas.style.height = window.innerHeight + 'px';
+            canvas.style.left = window.innerWidth/ 2 - newWidth/ 2  + 'px';            
+        }else if(orientation.type === "portrait-secondary" || orientation.type === "portrait-primary")
+        {
+            meta.content = 'width=device-width, height=device-height, initial-scale=1.0, user-scalable=no, shrink-to-fit=yes';
+            canvas.style.width = window.innerWidth + 'px';
+            canvas.style.height = (window.innerWidth*9) / 16 + 'px';
+            canvas.style.left = 0  + 'px';
+        }    
 
-        canvas.style.width = "1920px";
-        canvas.style.height = "1080px";
-      }
+        //unityShowBanner('WebGL builds are not supported on mobile devices.');
+        } else 
+        {
+        // Desktop style: Render the game canvas in a window that can be maximized to fullscreen:		
+        canvas.style.width = window.innerWidth + 'px';
+        canvas.style.height = (window.innerWidth*9) / 16 + 'px';		
+        }
 
       loadingBar.style.display = "block";
 
